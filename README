@@ -1,3 +1,7 @@
+Note: This is a fork of Pat Thoyt's kitgen repository. The only purpose
+is to add support for statically linking in the Tcl Windows API package.
+See end of this file details and usage differences.
+
 Quick start
 ===========
 
@@ -292,3 +296,66 @@ Contributors & testers:
 
 Lastly, many thanks to all those who have contributed to the evolution of Tclkit
 over the years, with suggestions, bug reports, encouragement, and enthusiasm.
+
+
+Notes specific to this kitgen fork
+----------------------------------
+
+This repository was forked from the original kitgen purely for the purpose
+of adding support for statically linking the TWAPI (Tcl Windows API)
+extension. As such, it will only be useful for folks building Windows
+versions of tclkit though existing kitgen functionality should still work.
+
+To build a kitgen with statically linked TWAPI, follow these steps:
+
+1. Build the TWAPI static library distribution as described in the
+   TWAPI package sources (available from http://sf.net/p/twapi). The
+   file BUILD_INSTRUCTIONS tells you what you need to know
+   (basically 'nmake twapi-lib' at the time of this writing).
+2. Then follow the instructions for building using Visual C++ in
+   the Quick Start section at the beginning of this file with the
+   following changes:
+   a. Build only the 'lite' version if including TWAPI; 'heavy' might
+      work too, but is not tested.
+   b. Add the following to the nmake command line
+      TWAPILIBDIR="path to your twapi lib distribuion in step 1 above"
+3. Caveats: note only the Visual C++ build supports statically linked TWAPI.
+   The msys version does not.
+
+As an example, the 8.6 directory in the kitgen build environment looks 
+like this on XP 32 bits (note other than the TWAPILIBDIR references) this
+should also work for a standard tclkit build.
+8.6->tcl : contains Tcl distribution
+8.6->tk : contains Tk distribution
+8.6->win32-x86 : contains the following files to build a 32-bit tclkit
+  8.6->win32-x86->envset.cmd sets up the build environment
+    @call "%ProgramFiles%\Microsoft Visual Studio\VC98\Bin\vcvars32.bat"
+    @call "c:\src\SDK-Feb-2003\setenv.bat" /XP32 /RETAIL
+  8.6->win32-x86->build.cmd is a simple build command
+    if "x%MSVCDir%" == "x" call envset.cmd
+    nmake VERSION=86 TWAPILIBDIR=c:\src\twapi\dist\twapi_lib UPX=0 lite KITOPTS="" PARTS="vqtcl vfs"
+  8.6->win32-x86->makefile is trivial
+    all: lite heavy
+    !include ..\..\Makefile.vc
+8.6->win32-x64 : contains the following files to build a 64-bit tclkit
+  (assumes a 64-bit build environment is already set up from the Windows
+   platform SDK setenv)
+  8.6->win32-x64->build.cmd is a simple build command file
+    nmake -f makefile-3264.vc VERSION=86 TWAPILIBDIR=c:\src\twapi\dist\twapi_lib UPX=0 KITOPTS="" PARTS="vqtcl vfs" TCLSH_NATIVE=tclsh86t 
+    (note TCLSH_NATIVE has to be specified since doing a cross-build)
+  8.6->win32-x64->makefile-3264.vc is the cross-build makefile
+    KIT_CLI_NATIVE=..\win32-ix86\kit-cli.exe
+    all: tclkit-cli-x64.exe tclkit-gui-x64.exe
+    !include ..\..\Makefile.vc
+    !message *** using native tclsh $(TCLSH_NATIVE)
+    tclkit-cli-x64.exe: kit-cli.exe tidy
+        @$(COPY) kit-cli.exe $@
+        $(KIT_CLI_NATIVE) -init- ../../setupvfs.tcl $(KITOPTS) $(CUSTOMSETUPVFS) $@ cli
+    tclkit-gui-x64.exe: kit-gui.exe tidy
+        @$(COPY) kit-gui.exe $@
+        $(KIT_CLI_NATIVE) -init- ../../setupvfs.tcl $(KITOPTS) $(CUSTOMSETUPVFS) $@ gui
+
+
+On a 64-bit build machine, the 32 and 64-bit builds are done the same way
+as the 32-bit build on a 32-bit system. You just have to set up the build
+environment appropriately.
