@@ -1,0 +1,23 @@
+syntax: glob
+
+# Emacs backups
+*~
+*.*~
+Makefile.vc~
+*.log
+*.orig
+*.pdb
+temp
+
+\#*#
+
+vercl.i
+vercl.x
+8.6\tcl
+8.6\tk
+*.pch
+nmakehlp.exe
+nmakehlp.obj
+version*.vc
+
+build/*

@@ -16,7 +16,7 @@ set encOpt 0
 set msgsOpt 0 
 set threadOpt none
 set tzOpt 0 
-set customOpt {}
+set customScripts {}
 set minimalEncodings 0
 
 while {1} {
@@ -29,7 +29,7 @@ while {1} {
     -T { set threadOpt static }
     -z { incr tzOpt }
     -c {
-        set customOpt [lindex $argv 1]
+      lappend customScripts [lindex $argv 1]
         set argv [lrange $argv 1 end]
     }
     default { break }
@@ -488,8 +488,8 @@ switch [lindex $argv 1] {
   }
 }
 
-if {$customOpt ne {}} {
-    source $customOpt
+foreach f $customScripts {
+  source $f
 }
 
 vfs::unmount $vfs

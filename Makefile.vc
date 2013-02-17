@@ -170,6 +170,41 @@ LIBS    = $(LIBS) bufferoverflowU.lib
 !endif
 !endif
 
+!if "$(TWAPILIBDIR)" != ""
+LIBS  = $(LIBS) \
+	iphlpapi.lib \
+	mpr.lib \
+	ole32.lib \
+	oleaut32.lib \
+	shell32.lib \
+	pdh.lib \
+	powrprof.lib \
+	psapi.lib \
+	rpcrt4.lib \
+	secur32.lib \
+	setupapi.lib \
+	userenv.lib \
+	uxtheme.lib \
+	version.lib \
+	winmm.lib \
+	winspool.lib \
+	wtsapi32.lib
+!if "$(MACHINE)" == "AMD64"
+TWAPILIB = $(TWAPILIBDIR)\twapi_base64.lib
+!else
+TWAPILIB = $(TWAPILIBDIR)\twapi_base.lib
+!endif
+LIBS = $(LIBS) $(TWAPILIB)
+TWAPIRC = "$(TWAPILIBDIR)\twapi_base.rcfrag"
+
+CFLAGS = $(CFLAGS) -DKIT_INCLUDES_TWAPI
+
+TWAPI_RC_FLAGS = -i $(TWAPILIBDIR) -DKIT_INCLUDES_TWAPI
+
+CUSTOMVFSSETUP = $(CUSTOMVFSSETUP) -c "$(TWAPILIBDIR)\kitgen_setup_twapi_vfs.tcl"
+
+!endif TWAPILIBDIR
+
 #-------------------------------------------------------------------------
 
 CLIOBJS = $(BUILD)\pwb.obj $(BUILD)\rechan.obj \
@@ -197,18 +232,18 @@ tclkit:     tclkit.exe
 tclkit-cli.exe: kit-cli.exe tidy
 	@$(COPY) kit-cli.exe $@
 	-@$(UPXCOMP)
-	kit-cli.exe -init- ../../setupvfs.tcl $(KITOPTS) $@ cli
+	kit-cli.exe -init- ../../setupvfs.tcl $(KITOPTS) $(CUSTOMVFSSETUP) $@ cli
 	$@ ../../validate.tcl
 
 tclkit-gui.exe: kit-gui.exe tidy
 	@$(COPY) kit-gui.exe $@
 	-@$(UPXCOMP)
-	kit-cli.exe -init- ../../setupvfs.tcl $(KITOPTS) $@ gui
+	kit-cli.exe -init- ../../setupvfs.tcl $(KITOPTS) $(CUSTOMVFSSETUP) $@ gui
 
-kit-cli.exe: setup tcl $(PARTS) files $(CLIOBJS)
-	@$(CC) $(CFLAGS) -I$(BUILD)/include -DKIT_LITE -DSTATIC_BUILD \
+kit-cli.exe: setup tcl $(PARTS) files $(CLIOBJS) $(TWAPILIB)
+	$(CC) $(CFLAGS) -I$(BUILD)/include -DKIT_LITE -DSTATIC_BUILD \
 	  -c ../../kitInit.c -Fo$(BUILD)/kitInit.obj
-	@$(LINK) $(LDFLAGS) -subsystem:console -out:$@ $(CLIOBJS) \
+	$(LINK) $(LDFLAGS) -subsystem:console -out:$@ $(CLIOBJS) \
 	  $(BUILD)\kitInit.obj \
 	  $(BUILD)\lib\vfs1.4\vfs1*.lib \
 	  $(BUILD)\lib\vqtcl4.1\vqtcl4*.lib \
@@ -217,7 +252,7 @@ kit-cli.exe: setup tcl $(PARTS) files $(CLIOBJS)
 	  $(BUILD)\lib\tclreg1*.lib $(LIBS)
 	$(_VC_MANIFEST_EMBED_EXE)
 
-kit-gui.exe: setup tcl tk $(PARTS) files $(GUIOBJS)
+kit-gui.exe: setup tcl tk $(PARTS) files $(GUIOBJS) $(TWAPILIB)
 	@$(CC) $(CFLAGS) -I$(BUILD)/include -DKIT_LITE -DKIT_INCLUDES_TK \
 	  -c ../../kitInit.c -Fo$(BUILD)/kitInit.obj
 	@$(LINK) $(LDFLAGS) -subsystem:windows -out:$@ $(GUIOBJS) \
@@ -362,14 +397,16 @@ $(BUILD)\winMain.obj: ..\tk\win\winMain.c
 	  -I..\tcl\generic -I..\tcl\win -I..\tk\generic -I..\tk\win \
 	  -DTK_LOCAL_APPINIT=TclKit_AppInit -Fo$@ -c $**
 
-$(BUILD)\tclkitsh.res: ..\..\tclkit.rc
+$(BUILD)\tclkitsh.res: ..\..\tclkit.rc $(TWAPIRC)
 	$(RC) -fo $@ -r -d STATIC_BUILD=1 -i $(BUILD)\include \
-	  -i $(BUILD)\files -i ..\tcl\win\rc $**
+	  $(TWAPI_RC_FLAGS) \
+	  -i $(BUILD)\files -i ..\tcl\win\rc ..\..\tclkit.rc
 
-$(BUILD)\tclkit.res: ..\..\tclkit.rc
-	$(COPY) $** $(BUILD)\tk\tclkit.rc
+$(BUILD)\tclkit.res: ..\..\tclkit.rc $(TWAPIRC)
+	$(COPY) ..\..\tclkit.rc $(BUILD)\tk\tclkit.rc
 	$(RC) -fo $@ -r -d STATIC_BUILD=1 -d BASE_NO_TK_ICON=1 \
 	  -d TCLKIT_WITH_TK -i $(BUILD)\include -i $(BUILD)\tk \
+	  $(TWAPI_RC_FLAGS) \
 	  -i $(BUILD)\files -i ..\tk\win\rc $(BUILD)\tk\tclkit.rc
 
 .PHONY: setup files tidy clean

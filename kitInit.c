@@ -67,6 +67,15 @@ Tcl_AppInitProc	Itcl_Init;
 #ifdef _WIN32
 Tcl_AppInitProc	Dde_Init, Dde_SafeInit, Registry_Init;
 #endif
+#ifdef KIT_INCLUDES_TWAPI
+Tcl_AppInitProc Twapi_Init;
+#endif
+#ifdef KIT_INCLUDES_SQLITE
+Tcl_AppInitProc Sqlite3_Init;
+#endif
+#ifdef KIT_INCLUDES_SQLITE_VTABLE
+Tcl_AppInitProc Sqlite_vtable_Init;
+#endif
 
 static Tcl_AppInitProc	TclKitPath_Init;
 
@@ -194,6 +203,16 @@ TclKit_AppInit(Tcl_Interp *interp)
 #endif
 
     /* insert custom packages here */
+#ifdef KIT_INCLUDES_SQLITE
+    Tcl_StaticPackage(0, "sqlite", Sqlite3_Init, NULL);
+#endif
+#ifdef KIT_INCLUDES_TWAPI
+    Tcl_StaticPackage(0, "twapi_base", Twapi_Init, NULL);
+#endif
+#ifdef KIT_INCLUDES_SQLITE_VTABLE
+    Tcl_StaticPackage(0, "sqlite_vtable", Sqlite_vtable_Init, NULL);
+#endif
+
 
     /* the tcl_rcFileName variable only exists in the initial interpreter */
 #ifdef _WIN32

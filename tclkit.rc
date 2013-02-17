@@ -119,3 +119,10 @@ tk                    ICON    DISCARDABLE     "tclkit.ico"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "wish.exe.manifest"
 
 #endif
+
+#ifdef KIT_INCLUDES_TWAPI
+#include "twapi_base.rcfrag"
+pkgIndex tclscript "pkgIndex.tcl"
+#endif
+
+
