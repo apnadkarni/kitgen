@@ -318,7 +318,7 @@ To build a kitgen with statically linked TWAPI, follow these steps:
    a. Build only the 'lite' version if including TWAPI; 'heavy' might
       work too, but is not tested.
    b. Add the following to the nmake command line
-      TWAPILIBDIR="path to your twapi lib distribuion in step 1 above"
+      TWAPILIBDIR="path to your twapi lib distribution in step 1 above"
 3. Caveats: note only the Visual C++ build supports statically linked TWAPI.
    The msys version does not.
 
@@ -333,7 +333,7 @@ should also work for a standard tclkit build.
     @call "c:\src\SDK-Feb-2003\setenv.bat" /XP32 /RETAIL
   8.6->win32-x86->build.cmd is a simple build command
     if "x%MSVCDir%" == "x" call envset.cmd
-    nmake VERSION=86 TWAPILIBDIR=c:\src\twapi\dist\twapi_lib UPX=0 lite KITOPTS="" PARTS="vqtcl vfs"
+    nmake lite VERSION=86 TWAPILIBDIR=c:\src\twapi\dist\twapi_lib UPX=0 lite KITOPTS="" PARTS="vqtcl vfs"
   8.6->win32-x86->makefile is trivial
     all: lite heavy
     !include ..\..\Makefile.vc
@@ -341,7 +341,7 @@ should also work for a standard tclkit build.
   (assumes a 64-bit build environment is already set up from the Windows
    platform SDK setenv)
   8.6->win32-x64->build.cmd is a simple build command file
-    nmake -f makefile-3264.vc VERSION=86 TWAPILIBDIR=c:\src\twapi\dist\twapi_lib UPX=0 KITOPTS="" PARTS="vqtcl vfs" TCLSH_NATIVE=tclsh86t 
+    nmake -f makefile-3264.vc lite VERSION=86 TWAPILIBDIR=c:\src\twapi\dist\twapi_lib UPX=0 KITOPTS="" PARTS="vqtcl vfs" TCLSH_NATIVE=tclsh86t 
     (note TCLSH_NATIVE has to be specified since doing a cross-build)
   8.6->win32-x64->makefile-3264.vc is the cross-build makefile
     KIT_CLI_NATIVE=..\win32-ix86\kit-cli.exe
@@ -357,5 +357,6 @@ should also work for a standard tclkit build.
 
 
 On a 64-bit build machine, the 32 and 64-bit builds are done the same way
-as the 32-bit build on a 32-bit system. You just have to set up the build
-environment appropriately.
+as the 32-bit build on a 32-bit system (there is no need for the
+makefile-3264.vc file). You just have to set up the build environment
+appropriately.

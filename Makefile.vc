@@ -172,6 +172,8 @@ LIBS    = $(LIBS) bufferoverflowU.lib
 
 !if "$(TWAPILIBDIR)" != ""
 LIBS  = $(LIBS) \
+	credui.lib \
+	crypt32.lib \
 	iphlpapi.lib \
 	mpr.lib \
 	ole32.lib \
