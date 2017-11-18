@@ -1,0 +1,29 @@
+# Builds tclkits for AMD64 using the Platform SDK for Server 2003 compilers.
+# nmake -f makefile-3264.vc KIT_INCLUDES_TWAPI=1 VERSION=86 UPX=0 TCLSH_NATIVE=tclsh86t
+#
+# Use
+#  nmake -nologo MACHINE=AMD64 VERSION=85 UPX=0 \
+#      TCLSH_NATIVE=c:\opt\tcl\bin\tclsh.exe tclkit-cli-amd64.exe
+
+!ifndef MACHINE
+MACHINE=AMD64
+!endif
+!ifndef UPX
+UPX=0
+!endif
+
+KIT_CLI_NATIVE=..\win32-ix86\kit-cli.exe
+
+all: tclkit-cli-x64.exe tclkit-gui-x64.exe
+
+!include ..\..\Makefile.vc
+
+!message *** using native tclsh $(TCLSH_NATIVE)
+
+tclkit-cli-x64.exe: kit-cli.exe tidy
+        @$(COPY) kit-cli.exe $@
+        $(KIT_CLI_NATIVE) -init- ../../setupvfs.tcl $(KITOPTS) $(CUSTOMSETUPVFS) $@ cli
+
+tclkit-gui-x64.exe: kit-gui.exe tidy
+        @$(COPY) kit-gui.exe $@
+        $(KIT_CLI_NATIVE) -init- ../../setupvfs.tcl $(KITOPTS) $(CUSTOMSETUPVFS) $@ gui
