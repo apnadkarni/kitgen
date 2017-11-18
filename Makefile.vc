@@ -190,11 +190,12 @@ LIBS  = $(LIBS) \
 	version.lib \
 	winmm.lib \
 	winspool.lib \
+	wintrust.lib \
 	wtsapi32.lib
 !if "$(MACHINE)" == "AMD64"
-TWAPILIB = $(TWAPILIBDIR)\twapi_base64.lib
+TWAPILIB = $(TWAPILIBDIR)\twapi_base64.lib $(TWAPILIBDIR)\release_amd64\libdyncall_s.lib
 !else
-TWAPILIB = $(TWAPILIBDIR)\twapi_base.lib
+TWAPILIB = $(TWAPILIBDIR)\twapi_base.lib $(TWAPILIBDIR)\release_x86\libdyncall_s.lib
 !endif
 LIBS = $(LIBS) $(TWAPILIB)
 TWAPIRC = "$(TWAPILIBDIR)\twapi_base.rcfrag"
