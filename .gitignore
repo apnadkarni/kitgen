@@ -4,7 +4,8 @@
 /sources
 
 # Ignore the build directories but not the 8.x extensions directory
-/8.*/
+/8.*/tcl
+/8.*/tk
 !/8.x
 
 # Ignore nmake temporary files
@@ -27,6 +28,8 @@ versions.vc
 /8.x/mk/builds/
 /8.x/mk/win/Debug/
 /8.x/mk/win/Release/
+
+Release*
 
 # Emacs backups
 *~
