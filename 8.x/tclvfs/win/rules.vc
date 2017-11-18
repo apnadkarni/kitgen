@@ -563,10 +563,9 @@ TCL_DOES_STUBS	= 1
 !endif
 
 !if $(TCLINSTALL)
-_TCLBINDIR      = "$(_TCLDIR)\bin"
-TCLSH		= "$(_TCLBINDIR)\tclsh$(TCL_VERSION)$(SUFX).exe"
+TCLSH		= "$(_TCLDIR)\bin\tclsh$(TCL_VERSION)$(SUFX).exe"
 !if !exist($(TCLSH)) && $(TCL_THREADS)
-TCLSH           = "$(_TCLBINDIR)\tclsh$(TCL_VERSION)t$(SUFX).exe"
+TCLSH           = "$(_TCLDIR)\bin\tclsh$(TCL_VERSION)t$(SUFX).exe"
 !endif
 TCLSTUBLIB	= "$(_TCLDIR)\lib\tclstub$(TCL_VERSION).lib"
 TCLIMPLIB	= "$(_TCLDIR)\lib\tcl$(TCL_VERSION)$(SUFX).lib"
@@ -577,10 +576,9 @@ COFFBASE	= \must\have\tcl\sources\to\build\this\target
 TCLTOOLSDIR	= \must\have\tcl\sources\to\build\this\target
 TCL_INCLUDES    = -I"$(_TCLDIR)\include"
 !else
-_TCLBINDIR      = $(_TCLDIR)\win\$(BUILDDIRTOP)
-TCLSH		= "$(_TCLBINDIR)\tclsh$(TCL_VERSION)$(SUFX).exe"
+TCLSH		= "$(_TCLDIR)\win\$(BUILDDIRTOP)\tclsh$(TCL_VERSION)$(SUFX).exe"
 !if !exist($(TCLSH)) && $(TCL_THREADS)
-TCLSH		= "$(_TCLBINDIR)\tclsh$(TCL_VERSION)t$(SUFX).exe"
+TCLSH		= "$(_TCLDIR)\win\$(BUILDDIRTOP)\tclsh$(TCL_VERSION)t$(SUFX).exe"
 !endif
 TCLSTUBLIB	= "$(_TCLDIR)\win\$(BUILDDIRTOP)\tclstub$(TCL_VERSION).lib"
 TCLIMPLIB	= "$(_TCLDIR)\win\$(BUILDDIRTOP)\tcl$(TCL_VERSION)$(SUFX).lib"
