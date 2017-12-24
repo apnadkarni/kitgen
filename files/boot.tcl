@@ -126,5 +126,5 @@ proc tclInit {} {
     set auto_path $tcl_libPath
     # Ditto for Tcl module search path
     tcl::tm::path remove {*}[tcl::tm::path list]
-    tcl::tm::roots [file join $noe lib]
+    tcl::tm::roots [list [file join $noe lib]]
 }
