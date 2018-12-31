@@ -20,7 +20,7 @@ exit /b 0
 :build_full
 PAUSE Building full version
 SET kittype=max
-nmake lite VERSION=86 UPX=0 KITOPTS="-e -m -z" PARTS="vqtcl vfs" TWAPILIBDIR=C:\src\twapi\twapi\releases\dist-4.2.12\twapi-lib 
+nmake lite VERSION=86 UPX=0 KITOPTS="-e -m -z" PARTS="vqtcl vfs" TWAPILIBDIR=d:\src\twapi\twapi\releases\dist-4.2.13\twapi-lib 
 goto done
 
 :build_minimal
